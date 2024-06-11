@@ -1,0 +1,29 @@
+# Build Keil files
+*.rar
+*.o
+*.d
+*.crf
+*.htm
+*.dep
+*.map
+*.bak
+*.axf
+*.lnp
+*.lst
+*.ini
+*.scvd
+*.iex
+*.sct
+*.dbgconf
+*.uvguix
+*.uvguix.*
+# *.uvoptx
+*.__i
+*.i
+*.txt
+*.launch
+MDK/at32f415rc_can/
+!docs/*.txt
+RTE/
+*debug
+.vs/
