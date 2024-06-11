@@ -1,6 +1,6 @@
 [submodule "AT32F415_Firmware_Library"]
 	path = AT32F415_Firmware_Library
-	url = https://github.com/ArteryTek/AT32F415_Firmware_Library.git
+	url = https://github.com/ArteryTek/AT32F415_Firmware_Library
 [submodule "CANopenNode"]
 	path = CANopenNode
-	url = https://github.com/CANopenNode/CANopenNode.git
+	url = https://github.com/CANopenNode/CANopenNode
