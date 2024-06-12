@@ -1,4 +1,5 @@
 #include "main.h"
+#include "usb_conf.h"
 #include "CO_app_AT32.h"
 
 /**
@@ -90,6 +91,9 @@ CANopenNodeAT32 CANOpenNode = {
 	.baudrate = 250,
 };
 
+void usb_init( void );
+void usb_process( void );
+
 /**
   * @brief  main function.
   * @param  none
@@ -108,8 +112,9 @@ int main(void)
 	Timer_Init( );
 	
 	nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
-	can_gpio_config();
+	usb_init( );
 
+	can_gpio_config( );
 	canopen_app_init( &CANOpenNode );
 
 	uint32_t timer = 0;
@@ -118,6 +123,8 @@ int main(void)
 
 	while (1)
 	{
+		usb_process( );
+
 		time_current = Timer_GetTick( );
 		if ( time_current != time_old )
 		{

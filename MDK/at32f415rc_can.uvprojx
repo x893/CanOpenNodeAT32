@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>AT32F415RCT7,USE_STDPERIPH_DRIVER,AT_START_F415_V1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\AT32F415_Firmware_Library\libraries\drivers\inc;..\AT32F415_Firmware_Library\libraries\cmsis\cm4\core_support;..\AT32F415_Firmware_Library\libraries\cmsis\cm4\device_support;..\examples\at32f415rc_can\;..\AT32F415_Firmware_Library\project\at32f415_board;..\CANopenNode_AT32;..\CANopenNode</IncludePath>
+              <IncludePath>..\AT32F415_Firmware_Library\libraries\cmsis\cm4\core_support;..\AT32F415_Firmware_Library\libraries\cmsis\cm4\device_support;..\AT32F415_Firmware_Library\libraries\drivers\inc;..\AT32F415_Firmware_Library\project\at32f415_board;..\examples\at32f415rc_can\;..\CANopenNode_AT32;..\CANopenNode;..\AT32F415_Firmware_Library\middlewares\usb_drivers\inc;..\AT32F415_Firmware_Library\middlewares\usbd_class\cdc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -402,6 +402,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\examples\at32f415rc_can\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\examples\at32f415rc_can\usb.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -607,6 +612,46 @@
               <FileName>CO_LSSslave.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\CANopenNode\305\CO_LSSslave.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>usbd_driver</GroupName>
+          <Files>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usb_drivers\src\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usb_drivers\src\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usb_drivers\src\usbd_int.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_sdr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usb_drivers\src\usbd_sdr.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>usbd_class</GroupName>
+          <Files>
+            <File>
+              <FileName>cdc_class.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usbd_class\cdc\cdc_class.c</FilePath>
+            </File>
+            <File>
+              <FileName>cdc_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\middlewares\usbd_class\cdc\cdc_desc.c</FilePath>
             </File>
           </Files>
         </Group>
