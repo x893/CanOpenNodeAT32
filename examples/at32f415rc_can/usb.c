@@ -214,7 +214,7 @@ void usb_low_power_wakeup_config(void)
   exint_init_struct.line_polarity = EXINT_TRIGGER_RISING_EDGE;
   exint_init(&exint_init_struct);
 
-  nvic_irq_enable(OTG_WKUP_IRQ, 0, 0);
+  nvic_irq_enable(OTG_WKUP_IRQ, 3, 0);
 }
 
 /**
@@ -341,7 +341,7 @@ void usb_init( )
 	usb_clock48m_select(USB_CLK_HEXT);
 
 	/* enable otgfs irq */
-	nvic_irq_enable(OTG_IRQ, 0, 0);
+	nvic_irq_enable(OTG_IRQ, 3, 0);
 
 	/* init usb */
 	usbd_init ( &otg_core_struct,

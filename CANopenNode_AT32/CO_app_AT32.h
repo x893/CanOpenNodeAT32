@@ -28,12 +28,7 @@ typedef struct {
     /* Pass in the CAN Handle to this function and it wil be used for all CAN Communications. */
 	can_type* CANHandle;
 
-    void (*HWInitFunction)(void); /* Pass in the function that initialize the CAN peripheral, usually MX_CAN_Init */
-
-	 // This will be updated by the stack - Use them for the LED management
-    uint8_t outStatusLEDGreen;
-	// This will be updated by the stack - Use them for the LED management
-    uint8_t outStatusLEDRed;
+    void (*HWInitFunction)(uint16_t baudrate); /* Pass in the function that initialize the CAN peripheral, usually MX_CAN_Init */
 
     CO_t* canOpenStack;
 
@@ -46,8 +41,7 @@ extern CANopenNodeAT32* pCANopenNodeAT32;
 
 /* This function will initialize the required CANOpen Stack objects, allocate the memory and prepare stack for communication reset*/
 int canopen_app_init( CANopenNodeAT32* canopenAT32 );
-/* This function will reset the CAN communication periperhal and also the CANOpen stack variables */
-int canopen_app_resetCommunication( void );
+
 /* This function will check the input buffers and any outstanding tasks that are not time critical, this function should be called regurarly from your code (i.e from your while(1))*/
 void canopen_app_process( uint32_t timeDifference_us );
 

@@ -41,9 +41,97 @@
 // We don't need Storage option, implement based on your use case and remove this line from here
 #undef CO_CONFIG_STORAGE_ENABLE
 
+#define CO_CONFIG_LEDS	CO_CONFIG_LEDS_ENABLE
+
+#define CO_CONFIG_GLOBAL_FLAG_TIMERNEXT		(CO_CONFIG_FLAG_TIMERNEXT)
+#define CO_CONFIG_GLOBAL_FLAG_OD_DYNAMIC	CO_CONFIG_FLAG_OD_DYNAMIC
+
 #ifdef CO_DRIVER_CUSTOM
 #include "CO_driver_custom.h"
 #endif
+
+#define CO_CONFIG_CRC16		CO_CONFIG_CRC16_ENABLE
+
+#define CO_CONFIG_SDO_SRV	( \
+							CO_CONFIG_SDO_SRV_SEGMENTED |			\
+							CO_CONFIG_SDO_SRV_BLOCK |				\
+							CO_CONFIG_GLOBAL_FLAG_CALLBACK_PRE |	\
+							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
+							CO_CONFIG_GLOBAL_FLAG_OD_DYNAMIC |		\
+							0 )
+// #define CO_CONFIG_SDO_SRV_BUFFER_SIZE 2054 /* 2051 recieved block */
+#define CO_CONFIG_SDO_SRV_BUFFER_SIZE 1032 /* 1029 recieved block */
+
+#define CO_CONFIG_PDO		( \
+							CO_CONFIG_RPDO_ENABLE |					\
+							CO_CONFIG_TPDO_ENABLE |					\
+							CO_CONFIG_PDO_SYNC_ENABLE |				\
+							CO_CONFIG_GLOBAL_RT_FLAG_CALLBACK_PRE |	\
+							CO_CONFIG_PDO_OD_IO_ACCESS |			\
+							CO_CONFIG_GLOBAL_FLAG_OD_DYNAMIC |		\
+							CO_CONFIG_RPDO_TIMERS_ENABLE |			\
+							CO_CONFIG_TPDO_TIMERS_ENABLE |			\
+							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
+							0 )
+
+/* #define USE_GATEWAY */
+#ifdef USE_GATEWAY
+
+#ifndef CO_CONFIG_NMT
+#define CO_CONFIG_NMT		( \
+							CO_CONFIG_GLOBAL_FLAG_CALLBACK_PRE |	\
+							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
+							CO_CONFIG_NMT_MASTER |					\
+							0 )
+#endif
+
+#ifndef CO_CONFIG_SDO_CLI
+#define CO_CONFIG_SDO_CLI	( \
+							CO_CONFIG_SDO_CLI_ENABLE |				\
+							CO_CONFIG_SDO_CLI_SEGMENTED |			\
+							CO_CONFIG_SDO_CLI_BLOCK |				\
+							CO_CONFIG_SDO_CLI_LOCAL |				\
+							CO_CONFIG_GLOBAL_FLAG_CALLBACK_PRE |	\
+							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
+							CO_CONFIG_GLOBAL_FLAG_OD_DYNAMIC |		\
+							0 )
+#endif
+
+#ifndef CO_CONFIG_FIFO
+#define CO_CONFIG_FIFO		( \
+							CO_CONFIG_FIFO_ENABLE |				\
+							CO_CONFIG_FIFO_ALT_READ |			\
+							CO_CONFIG_FIFO_CRC16_CCITT |		\
+							CO_CONFIG_FIFO_ASCII_COMMANDS |		\
+							CO_CONFIG_FIFO_ASCII_DATATYPES |	\
+							0 )
+#endif
+
+#ifndef CO_CONFIG_LSS
+#define CO_CONFIG_LSS		( \
+							CO_CONFIG_LSS_SLAVE |							\
+							CO_CONFIG_LSS_SLAVE_FASTSCAN_DIRECT_RESPOND |	\
+							CO_CONFIG_LSS_MASTER |							\
+							CO_CONFIG_GLOBAL_FLAG_CALLBACK_PRE |			\
+							0 )
+#endif
+
+#ifndef CO_CONFIG_GTW
+#define CO_CONFIG_GTW		( \
+							CO_CONFIG_GTW_ASCII |				\
+							CO_CONFIG_GTW_ASCII_SDO |			\
+							CO_CONFIG_GTW_ASCII_NMT |			\
+							CO_CONFIG_GTW_ASCII_LSS |			\
+							CO_CONFIG_GTW_ASCII_ERROR_DESC |	\
+							CO_CONFIG_GTW_ASCII_PRINT_HELP |	\
+							CO_CONFIG_GTW_ASCII_PRINT_LEDS |	\
+							0 )
+#define CO_CONFIG_GTW_BLOCK_DL_LOOP		3
+#define CO_CONFIG_GTWA_COMM_BUF_SIZE	1024
+#define CO_CONFIG_GTWA_LOG_BUF_SIZE		256
+#endif
+
+#endif /* USE_GATEWAY */
 
 #ifdef __cplusplus
 extern "C" {

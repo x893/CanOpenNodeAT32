@@ -27,6 +27,20 @@ CO_t* CO = NULL; /* CANopen object */
 // Global variables
 CO_ReturnError_t err;
 
+static bool_t LSScfgStoreCallback(void *object, uint8_t id, uint16_t bitRate)
+{
+	((CANopenNodeAT32 *)object)->baudrate = bitRate;
+	((CANopenNodeAT32 *)object)->desiredNodeID = id;
+	return true;
+}
+
+int can_get_bitrate_index(uint16_t bitRate);
+bool_t CO_LSSchkBitrateCallback(void *object, uint16_t bitRate)
+{
+    (void)object;
+	return (can_get_bitrate_index(bitRate) >= 0);
+}
+
 /* This function will basically setup the CANopen node */
 int
 canopen_app_init(CANopenNodeAT32* _canopenNodeAT32)
@@ -81,12 +95,6 @@ canopen_app_init(CANopenNodeAT32* _canopenNodeAT32)
     }
 #endif
 
-    canopen_app_resetCommunication();
-    return 0;
-}
-
-int
-canopen_app_resetCommunication() {
     /* CANopen communication reset - initialize CANopen objects *******************/
     CO->CANmodule->CANnormal = false;
 
@@ -134,6 +142,10 @@ canopen_app_resetCommunication() {
 		ErrorHandler( );
     }
 
+	/* initialize callbacks */
+	CO_LSSslave_initCheckBitRateCallback( CO->LSSslave, NULL, CO_LSSchkBitrateCallback );
+	CO_LSSslave_initCfgStoreCallback( CO->LSSslave, pCANopenNodeAT32, LSScfgStoreCallback );
+
     err = CO_CANopenInitPDO(CO, CO->em, OD, pCANopenNodeAT32->activeNodeID, &errInfo);
     if (err != CO_ERROR_NO)
 	{
@@ -158,6 +170,7 @@ canopen_app_resetCommunication() {
 
     /* start CAN */
     CO_CANsetNormalMode(CO->CANmodule);
+
     return 0;
 }
 
@@ -170,9 +183,6 @@ void canopen_app_process( uint32_t timeDifference_us )
     /* get time difference since last function call */
 
 	reset_status = CO_process(CO, false, timeDifference_us, NULL);
-
-	pCANopenNodeAT32->outStatusLEDRed = CO_LED_RED(CO->LEDs, CO_LED_CANopen);
-	pCANopenNodeAT32->outStatusLEDGreen = CO_LED_GREEN(CO->LEDs, CO_LED_CANopen);
 
 	if (!CO->nodeIdUnconfigured && CO->CANmodule->CANnormal)
 	{
