@@ -1,5 +1,6 @@
 #include "301/CO_driver.h"
 #include "CO_app_AT32.h"
+#include "CO_queue.h"
 
 #define CAN_RX_PIN			GPIO_PINS_8
 #define CAN_RX_PORT			GPIOB
@@ -10,10 +11,10 @@
 
 #define CAN_CLOCK			CRM_CAN1_PERIPH_CLOCK
 
-#define CAN_TX_IRQn			CAN1_TX_IRQn
+//--- #define CAN_SE_IRQn			CAN1_SE_IRQn
+//--- #define CAN_TX_IRQn			CAN1_TX_IRQn
 #define CAN_RX0_IRQn		CAN1_RX0_IRQn
 #define CAN_RX1_IRQn		CAN1_RX1_IRQn
-#define CAN_SE_IRQn			CAN1_SE_IRQn
 
 #define CAN_TX_IRQHandler	CAN1_TX_IRQHandler
 #define CAN_RX0_IRQHandler	CAN1_RX0_IRQHandler
@@ -381,6 +382,7 @@ CO_CANtxBufferInit(CO_CANmodule_t* CANmodule, uint16_t index, uint16_t ident, bo
     return buffer;
 }
 
+#ifdef CAN_TX_IRQn
 /**
  * \brief           Send CAN message to network
  * This function must be called with atomic access.
@@ -409,21 +411,45 @@ prv_send_can_message(CO_CANmodule_t* CANmodule, CO_CANtx_t* buffer)
 						&tx_hdr
 			) == CAN_TX_STATUS_NO_EMPTY ? 0 : 1;
 }
+#endif
 
 /******************************************************************************/
 CO_ReturnError_t
-CO_CANsend(CO_CANmodule_t* CANmodule, CO_CANtx_t* buffer) {
+CO_CANsend(CO_CANmodule_t* CANmodule, CO_CANtx_t* buffer)
+{
     CO_ReturnError_t err = CO_ERROR_NO;
 
     /* Verify overflow */
-    if (buffer->bufferFull) {
-        if (!CANmodule->firstCANtxMessage) {
+    if (buffer->bufferFull)
+	{
+        if (!CANmodule->firstCANtxMessage)
+		{
             /* don't set error, if bootup message is still on buffers */
             CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
         }
         err = CO_ERROR_TX_OVERFLOW;
     }
 
+	static CAN_TX_QUEUE_TYPE item;
+
+	item.id_type = CAN_ID_STANDARD;
+	item.standard_id = buffer->ident & 0x7FF;
+	item.dlc = buffer->DLC & 0xFF;
+	item.frame_type = CAN_TFT_DATA;
+	if (item.dlc != 0)
+		memcpy((uint8_t*)&(item.data[0]), (uint8_t*)&buffer->data[0], item.dlc);
+	if (CO_TxQueuePut(&item))
+	{
+        CANmodule->bufferInhibitFlag = buffer->syncFlag;
+	}
+	else
+	{
+		buffer->bufferFull = true;
+        CANmodule->CANtxCount++;
+		err = CO_ERROR_TX_OVERFLOW;
+	}
+	return err;
+#if 0
     /*
      * Send message to CAN network
      *
@@ -441,6 +467,7 @@ CO_CANsend(CO_CANmodule_t* CANmodule, CO_CANtx_t* buffer) {
     }
     CO_UNLOCK_CAN_SEND(CANmodule);
     return err;
+#endif
 }
 
 /******************************************************************************/
@@ -533,57 +560,6 @@ CO_CANmodule_process(CO_CANmodule_t* CANmodule)
 	}
 }
 
-#if defined(CAN_RX0_IRQn) || defined(CAN_RX1_IRQn)
-/**
- * \brief           Read message from RX FIFO
- * \param           hfdcan: pointer to an FDCAN_HandleTypeDef structure that contains
- *                      the configuration information for the specified FDCAN.
- * \param[in]       fifo: Fifo number to use for read
- * \param[in]       fifo_isrs: List of interrupts for respected FIFO
- */
-static void prv_read_can_received_msg( can_rx_fifo_num_type fifo )
-{
-    CO_CANrxMsg_t rcvMsg;
-    CO_CANrx_t* buffer = NULL; /* receive message buffer from CO_CANmodule_t object. */
-    uint16_t index;            /* index of received message */
-    uint32_t rcvMsgIdent;      /* identifier of the received message */
-    
-    static can_rx_message_type rx_hdr;
-
-    /* Read received message from FIFO */
-    can_message_receive( ((CANopenNodeAT32*)(CANModule_local->CANptr))->CANHandle, fifo, &rx_hdr);
-
-    /* Setup identifier (with RTR) and length */
-    rcvMsg.ident = rx_hdr.standard_id | (rx_hdr.frame_type == CAN_TFT_REMOTE ? FLAG_RTR : 0x00);
-    rcvMsg.dlc = rx_hdr.dlc;
-    rcvMsgIdent = rcvMsg.ident;
-
-    /*
-     * Hardware filters are not used for the moment
-     * \todo: Implement hardware filters...
-     */
-    if (CANModule_local->useCANrxFilters)
-	{
-        __BKPT(0);
-    }
-	else
-	{
-        /*
-         * We are not using hardware filters, hence it is necessary
-         * to manually match received message ID with all buffers
-         */
-        buffer = CANModule_local->rxArray;
-        for (index = CANModule_local->rxSize; index > 0U; --index, ++buffer)
-            if (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U)
-			{
-				if ( buffer->CANrx_callback != NULL )
-					buffer->CANrx_callback(buffer->object, (void*)&rcvMsg);
-                break;
-            }
-	}
-}
-#endif
-
 #ifdef CAN_RX0_IRQn
 
 /**
@@ -594,8 +570,13 @@ static void prv_read_can_received_msg( can_rx_fifo_num_type fifo )
 void
 CAN_RX0_IRQHandler ( void )
 {
+	static can_rx_message_type msg;
+
 	if (can_interrupt_flag_get(CAN_CAN, CAN_RF0MN_FLAG) != RESET)
-		prv_read_can_received_msg( CAN_RX_FIFO0 );
+	{
+		can_message_receive(CAN_CAN, CAN_RX_FIFO0, &msg);
+		CO_RxQueuePut(&msg);
+	}
 }
 #endif
 
@@ -608,8 +589,13 @@ CAN_RX0_IRQHandler ( void )
 void
 CAN_RX1_IRQHandler(can_type* hcan)
 {
+	static can_rx_message_type msg;
+
 	if (can_interrupt_flag_get(CAN_CAN, CAN_RF1MN_FLAG) != RESET)
-		prv_read_can_received_msg( CAN_RX_FIFO1 );
+	{
+		can_message_receive(CAN_CAN, CAN_RX_FIFO1, &msg);
+		CO_RxQueuePut(&msg);
+	}
 }
 #endif
 
@@ -710,4 +696,41 @@ CAN_TX_IRQHandler( void )
 		CO_CANinterrupt_TX(CANModule_local, CAN_TX_MAILBOX0);
 	}
 }
+
 #endif
+
+void CO_process_queue()
+{
+	CAN_TX_QUEUE_TYPE* txQueueItem;
+	while ((txQueueItem = CO_TxQueueGet()) != NULL)
+	{
+		if (CAN_TX_STATUS_NO_EMPTY != can_message_transmit(CAN_CAN, txQueueItem))
+			CO_TxQueueShift();
+	}
+
+	CAN_RX_QUEUE_TYPE* rxQueueItem;
+	CO_CANrx_t* msgBuff = CANModule_local->rxArray;
+	uint16_t rxSize = CANModule_local->rxSize;
+	uint16_t msg;
+	uint16_t index;
+
+	while ((rxQueueItem = CANRxQueueGet()) != NULL)
+	{
+		msg = rxQueueItem->standard_id;
+
+		for (index = 0; index < rxSize; index++)
+		{
+			if (((msg ^ msgBuff->ident) & msgBuff->mask) == 0)
+			{
+				/* Call specific function, which will process the message */
+				if (msgBuff->CANrx_callback)
+					msgBuff->CANrx_callback(msgBuff->object, rxQueueItem);
+				break;
+			}
+			msgBuff++;
+		}
+
+		CANRxQueueShift();
+	}
+}
+

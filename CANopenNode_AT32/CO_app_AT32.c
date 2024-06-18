@@ -63,6 +63,7 @@ canopen_app_init(CANopenNodeAT32* _canopenNodeAT32)
     CO_config_t* config_ptr = NULL;
 
 #ifdef CO_MULTIPLE_OD
+	#error "Never check CO_MULTIPLE_OD"
     /* example usage of CO_MULTIPLE_OD (but still single OD here) */
     CO_config_t co_config = {0};
     OD_INIT_CONFIG(co_config); /* helper macro from OD.h */
@@ -182,26 +183,31 @@ void canopen_app_process( uint32_t timeDifference_us )
     /* loop for normal program execution ******************************************/
     /* get time difference since last function call */
 
+	CO_process_queue( );
+
 	reset_status = CO_process(CO, false, timeDifference_us, NULL);
 
 	if (!CO->nodeIdUnconfigured && CO->CANmodule->CANnormal)
 	{
-		syncWas = false;
-
 #if (CO_CONFIG_SYNC) & CO_CONFIG_SYNC_ENABLE
 		syncWas = CO_process_SYNC(CO, timeDifference_us, NULL);
+#else
+		syncWas = false;
 #endif
+
 #if (CO_CONFIG_PDO) & CO_CONFIG_RPDO_ENABLE
 		CO_process_RPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 
-
+		#warning "Insert logic here"
 
 #if (CO_CONFIG_PDO) & CO_CONFIG_TPDO_ENABLE
 		CO_process_TPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 	/* Further I/O or nonblocking application code may go here. */
 	}
+
+	CO_process_queue( );
 
 	if (reset_status == CO_RESET_COMM)
 	{

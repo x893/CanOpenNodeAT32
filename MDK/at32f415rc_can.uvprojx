@@ -474,6 +474,11 @@
           <GroupName>CANopenNode_AT32</GroupName>
           <Files>
             <File>
+              <FileName>CO_queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\CANopenNode_AT32\CO_queue.c</FilePath>
+            </File>
+            <File>
               <FileName>CO_driver_target.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\CANopenNode_AT32\CO_driver_target.h</FilePath>
