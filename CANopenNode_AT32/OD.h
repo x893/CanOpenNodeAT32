@@ -16,7 +16,7 @@
 
         Created:      23.11.2024 13:00:00
         Created By:   
-        Modified:     11.06.2024 23:24:28
+        Modified:     17.06.2024 13:25:51
         Modified By:  
 
     Device Info:
@@ -223,6 +223,8 @@ typedef struct {
         uint32_t applicationObject7;
         uint32_t applicationObject8;
     } x1A03_TPDOMappingParameter;
+    uint8_t x2101_nodeID;
+    uint16_t x2102_bitrate;
 } OD_PERSIST_COMM_t;
 
 typedef struct {
@@ -291,7 +293,9 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1A01 &OD->list[29]
 #define OD_ENTRY_H1A02 &OD->list[30]
 #define OD_ENTRY_H1A03 &OD->list[31]
-#define OD_ENTRY_H6000 &OD->list[32]
+#define OD_ENTRY_H2101 &OD->list[32]
+#define OD_ENTRY_H2102 &OD->list[33]
+#define OD_ENTRY_H6000 &OD->list[34]
 
 
 /*******************************************************************************
@@ -329,7 +333,9 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1A01_TPDOMappingParameter &OD->list[29]
 #define OD_ENTRY_H1A02_TPDOMappingParameter &OD->list[30]
 #define OD_ENTRY_H1A03_TPDOMappingParameter &OD->list[31]
-#define OD_ENTRY_H6000_input8bit &OD->list[32]
+#define OD_ENTRY_H2101_nodeID &OD->list[32]
+#define OD_ENTRY_H2102_bitrate &OD->list[33]
+#define OD_ENTRY_H6000_input8bit &OD->list[34]
 
 
 /*******************************************************************************

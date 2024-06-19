@@ -193,14 +193,36 @@ void CAN_TIMER_IRQHandler( )
     }
 }
 
-void Timer_Init( )
+void HardwareInit( )
 {
 	crm_clocks_freq_type crm_clocks_freq_struct = {0};
+
+	nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
+	debug_periph_mode_set(0
+		| DEBUG_SLEEP
+		| DEBUG_DEEPSLEEP
+		| DEBUG_STANDBY
+		| DEBUG_WDT_PAUSE
+		| DEBUG_WWDT_PAUSE
+		| DEBUG_TMR1_PAUSE
+		| DEBUG_TMR2_PAUSE
+		| DEBUG_CAN1_PAUSE
+		, TRUE
+	);
 
 	/* get system clock */
 	crm_clocks_freq_get(&crm_clocks_freq_struct);
 
+	crm_periph_clock_enable(CRM_IOMUX_PERIPH_CLOCK, TRUE);
+	crm_periph_clock_enable(CRM_CRC_PERIPH_CLOCK, TRUE);
+	crm_periph_clock_enable(CRM_GPIOA_PERIPH_CLOCK, TRUE);
+	crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
+	crm_periph_clock_enable(CRM_GPIOC_PERIPH_CLOCK, TRUE);
+	crm_periph_clock_enable(CRM_GPIOF_PERIPH_CLOCK, TRUE);
 	crm_periph_clock_enable(CAN_TIMER_CLOCK, TRUE);
+
+	gpio_pin_remap_config(SWJTAG_GMUX_010, TRUE);
+
 	tmr_reset(CAN_TIMER);
 
 	tmr_base_init(CAN_TIMER, 10 - 1, (crm_clocks_freq_struct.ahb_freq / 10000) - 1);

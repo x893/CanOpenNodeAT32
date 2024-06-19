@@ -260,13 +260,13 @@
               </XRAM>
               <OCR_RVCT1>
                 <Type>1</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress>0x803e000</StartAddress>
+                <Size>0x1000</Size>
               </OCR_RVCT1>
               <OCR_RVCT2>
                 <Type>1</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress>0x803f000</StartAddress>
+                <Size>0x1000</Size>
               </OCR_RVCT2>
               <OCR_RVCT3>
                 <Type>1</Type>
@@ -276,7 +276,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x40000</Size>
+                <Size>0x3e000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -408,6 +408,11 @@
               <FileType>1</FileType>
               <FilePath>..\examples\at32f415rc_can\usb.c</FilePath>
             </File>
+            <File>
+              <FileName>EnterSystemBoot.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\CANopenNode_AT32\EnterSystemBoot.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -458,6 +463,21 @@
               <FileType>1</FileType>
               <FilePath>..\AT32F415_Firmware_Library\libraries\drivers\src\at32f415_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>at32f415_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\libraries\drivers\src\at32f415_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f415_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\libraries\drivers\src\at32f415_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f415_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\AT32F415_Firmware_Library\libraries\drivers\src\at32f415_debug.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -494,14 +514,14 @@
               <FilePath>..\CANopenNode_AT32\CO_driver_AT32.c</FilePath>
             </File>
             <File>
-              <FileName>CO_storageBlank.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\CANopenNode_AT32\CO_storageBlank.c</FilePath>
-            </File>
-            <File>
               <FileName>OD.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\CANopenNode_AT32\OD.c</FilePath>
+            </File>
+            <File>
+              <FileName>CO_Flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\CANopenNode_AT32\CO_Flash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -627,6 +647,16 @@
               <FileName>CO_gateway_ascii.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\CANopenNode\309\CO_gateway_ascii.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CANopenNode/storage</GroupName>
+          <Files>
+            <File>
+              <FileName>CO_storage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\CANopenNode\storage\CO_storage.c</FilePath>
             </File>
           </Files>
         </Group>

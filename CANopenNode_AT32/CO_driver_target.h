@@ -9,8 +9,8 @@
 
 #define CO_USE_GLOBALS
 
-// We don't need Storage option, implement based on your use case and remove this line from here
-#undef CO_CONFIG_STORAGE_ENABLE
+#define CO_CONFIG_STORAGE	CO_CONFIG_STORAGE_ENABLE
+#define CO_CONFIG_CRC16		CO_CONFIG_CRC16_ENABLE
 
 #define CO_CONFIG_LEDS	CO_CONFIG_LEDS_ENABLE
 
@@ -30,7 +30,7 @@
 							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
 							CO_CONFIG_GLOBAL_FLAG_OD_DYNAMIC |		\
 							0 )
-// #define CO_CONFIG_SDO_SRV_BUFFER_SIZE 2054 /* 2051 recieved block */
+
 #define CO_CONFIG_SDO_SRV_BUFFER_SIZE 1032 /* 1029 recieved block */
 
 #define CO_CONFIG_PDO		( \
@@ -45,7 +45,7 @@
 							CO_CONFIG_GLOBAL_FLAG_TIMERNEXT |		\
 							0 )
 
-/* #define USE_GATEWAY */
+// #define USE_GATEWAY
 #ifdef USE_GATEWAY
 
 #ifndef CO_CONFIG_NMT

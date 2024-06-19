@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xdd" fileCreator="" fileCreationDate="2024-11-23" fileCreationTime="13:00:00.0000000+03:00" fileModifiedBy="" fileModificationDate="2024-06-17" fileModificationTime="13:25:51.8002865+03:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xdd" fileCreator="" fileCreationDate="2024-11-23" fileCreationTime="13:00:00.0000000+03:00" fileModifiedBy="" fileModificationDate="2024-06-19" fileModificationTime="09:05:22.1214324+03:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>ARTERY</q1:vendorName>
         <q1:vendorID></q1:vendorID>
@@ -1452,6 +1452,18 @@
             <UDINT />
             <q1:defaultValue value="0x00000000" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_2101" access="readWrite">
+            <label lang="en">NodeID</label>
+            <USINT />
+            <q1:defaultValue value="0x7E" />
+            <q1:property name="CO_storageGroup" value="PERSIST_COMM" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_2102" access="readWrite">
+            <label lang="en">Bitrate</label>
+            <UINT />
+            <q1:defaultValue value="250" />
+            <q1:property name="CO_storageGroup" value="PERSIST_COMM" />
+          </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6000">
             <label lang="en">Input 8bit</label>
             <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6000" />
@@ -1518,7 +1530,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xdd" fileCreator="" fileCreationDate="2024-11-23" fileCreationTime="13:00:00.0000000+03:00" fileModificationDate="2024-06-17" fileModificationTime="13:25:51.8002865+03:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xdd" fileCreator="" fileCreationDate="2024-11-23" fileCreationTime="13:00:00.0000000+03:00" fileModificationDate="2024-06-19" fileModificationTime="09:05:22.1214324+03:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
@@ -1737,6 +1749,8 @@
             <CANopenSubObject subIndex="07" name="Application object 7" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_1A0307" />
             <CANopenSubObject subIndex="08" name="Application object 8" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_1A0308" />
           </CANopenObject>
+          <CANopenObject index="2101" name="NodeID" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_2101" />
+          <CANopenObject index="2102" name="Bitrate" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_2102" />
           <CANopenObject index="6000" name="Input 8bit" objectType="8" uniqueIDRef="UID_OBJ_6000" subNumber="9">
             <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_600000" />
             <CANopenSubObject subIndex="01" name="Input 8bit" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_SUB_600001" />

@@ -45,7 +45,7 @@ int canopen_app_init( CANopenNodeAT32* canopenAT32 );
 /* This function will check the input buffers and any outstanding tasks that are not time critical, this function should be called regurarly from your code (i.e from your while(1))*/
 void canopen_app_process( uint32_t timeDifference_us );
 
-void Timer_Init( void );
+void HardwareInit( void );
 uint32_t Timer_GetTick( void );
 
 #ifdef __cplusplus

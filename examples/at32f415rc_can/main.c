@@ -1,5 +1,6 @@
 #include "main.h"
 #include "CO_app_AT32.h"
+#include "CO_Flash.h"
 
 #define LED_RED		LED2
 #define LED_GREEN	LED4
@@ -27,14 +28,14 @@ int main(void)
 	system_clock_config();
 	at32_board_init();
 
+	__enable_irq();
+	HardwareInit( );
+
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
-	if ( canopen_storage_init( ) != CO_ERROR_NO )
-		ErrorHandler( ERR_OD_INVALID );
+	if ( CO_Storage_Init( ) != CO_ERROR_NO )
+		ErrorHandler( );
 #endif
 
-	Timer_Init( );
-	
-	nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
 	usb_init( );
 
 	canopen_app_init( &CANOpenNode );

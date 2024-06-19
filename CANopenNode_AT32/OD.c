@@ -182,7 +182,9 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .applicationObject6 = 0x00000000,
         .applicationObject7 = 0x00000000,
         .applicationObject8 = 0x00000000
-    }
+    },
+    .x2101_nodeID = 0x7E,
+    .x2102_bitrate = 0x00FA
 };
 
 OD_ATTR_RAM OD_RAM_t OD_RAM = {
@@ -238,6 +240,8 @@ typedef struct {
     OD_obj_record_t o_1A01_TPDOMappingParameter[9];
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
+    OD_obj_var_t o_2101_nodeID;
+    OD_obj_var_t o_2102_bitrate;
     OD_obj_array_t o_6000_input8bit;
 } ODObjs_t;
 
@@ -1080,6 +1084,16 @@ static CO_PROGMEM ODObjs_t ODObjs = {
             .dataLength = 4
         }
     },
+    .o_2101_nodeID = {
+        .dataOrig = &OD_PERSIST_COMM.x2101_nodeID,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_2102_bitrate = {
+        .dataOrig = &OD_PERSIST_COMM.x2102_bitrate,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
     .o_6000_input8bit = {
         .dataOrig0 = &OD_RAM.x6000_input8bit_sub0,
         .dataOrig = &OD_RAM.x6000_input8bit[0],
@@ -1127,6 +1141,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1A01, 0x09, ODT_REC, &ODObjs.o_1A01_TPDOMappingParameter, NULL},
     {0x1A02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1A03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
+    {0x2101, 0x01, ODT_VAR, &ODObjs.o_2101_nodeID, NULL},
+    {0x2102, 0x01, ODT_VAR, &ODObjs.o_2102_bitrate, NULL},
     {0x6000, 0x09, ODT_ARR, &ODObjs.o_6000_input8bit, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
