@@ -734,6 +734,7 @@ void CO_process_queue()
 {
 	CAN_TX_QUEUE_TYPE* txQueueItem;
 	can_trans_frame_type frame_type;
+
 	while ((txQueueItem = CO_TxQueueGet()) != NULL)
 	{
 		frame_type = txQueueItem->frame_type;
@@ -748,10 +749,9 @@ void CO_process_queue()
 	}
 
 	CAN_RX_QUEUE_TYPE* rxQueueItem;
-	CO_CANrx_t* msgBuff = CANModule_local->rxArray;
+	CO_CANrx_t* msgBuff;
 	uint16_t rxSize = CANModule_local->rxSize;
-	uint16_t msg;
-	uint16_t index;
+	uint16_t msg, index;
 
 	while ((rxQueueItem = CANRxQueueGet()) != NULL)
 	{
@@ -759,6 +759,7 @@ void CO_process_queue()
 		rxQueueItem->frame_type = CAN_TFT_DATA;
 
 		msg = rxQueueItem->standard_id;
+		msgBuff = CANModule_local->rxArray;
 
 		for (index = 0; index < rxSize; index++)
 		{
