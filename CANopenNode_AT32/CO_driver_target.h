@@ -135,10 +135,15 @@ typedef struct {
     uint8_t data[8]; /*!< Received data */
 } CO_CANrxMsg_t;
 
+#define CAN_RX_QUEUE_TYPE   can_rx_message_type
+#define CAN_TX_QUEUE_TYPE   can_tx_message_type
+
+#define CAN_TFT_USB			(can_trans_frame_type)0x10
+
 /* Access to received CAN message */
-#define CO_CANrxMsg_readIdent(msg) ((uint16_t)(((CO_CANrxMsg_t*)(msg)))->ident)
-#define CO_CANrxMsg_readDLC(msg)   ((uint8_t)(((CO_CANrxMsg_t*)(msg)))->dlc)
-#define CO_CANrxMsg_readData(msg)  ((uint8_t*)(((CO_CANrxMsg_t*)(msg)))->data)
+#define CO_CANrxMsg_readIdent(msg) ((uint16_t)(((CAN_RX_QUEUE_TYPE*)(msg)))->standard_id)
+#define CO_CANrxMsg_readDLC(msg)   ((uint8_t)(((CAN_RX_QUEUE_TYPE*)(msg)))->dlc)
+#define CO_CANrxMsg_readData(msg)  ((uint8_t*)&((((CAN_RX_QUEUE_TYPE*)(msg)))->data))
 
 /* Received message object */
 typedef struct {

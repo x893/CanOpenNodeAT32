@@ -144,9 +144,9 @@ Reset_Handler		PROC
 					EXPORT	NormalBoot			[WEAK]
 					IMPORT	__main
 					IMPORT	SystemInit
-					IMPORT	EnterSystemBoot
+					IMPORT	CheckSystemBoot
 
-					LDR	 R0, =EnterSystemBoot
+					LDR	 R0, =CheckSystemBoot
 					BX		R0
 
 NormalBoot			LDR	 R0, =SystemInit

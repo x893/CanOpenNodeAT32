@@ -3,9 +3,7 @@
 
 #include <stdbool.h>
 #include "main.h"
-
-#define CAN_RX_QUEUE_TYPE   can_rx_message_type
-#define CAN_TX_QUEUE_TYPE   can_tx_message_type
+#include "CO_driver_target.h"
 
 #ifdef __cplusplus
 extern "C" {

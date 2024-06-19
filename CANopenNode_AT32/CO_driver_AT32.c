@@ -233,8 +233,6 @@ void HardwareInit( )
 	/* overflow interrupt enable */
 	tmr_interrupt_enable(CAN_TIMER, TMR_OVF_INT, TRUE);
 	nvic_irq_enable(CAN_TIMER_IRQ, 1, 0);
-	
-	tmr_counter_enable(CAN_TIMER, TRUE);
 }
 
 /* Local instance of global CAN module */
@@ -388,11 +386,19 @@ CO_CANrxBufferInit(CO_CANmodule_t* CANmodule, uint16_t index, uint16_t ident, ui
 
 /******************************************************************************/
 CO_CANtx_t*
-CO_CANtxBufferInit(CO_CANmodule_t* CANmodule, uint16_t index, uint16_t ident, bool_t rtr, uint8_t noOfBytes,
-                   bool_t syncFlag) {
+CO_CANtxBufferInit(
+	CO_CANmodule_t* CANmodule,
+	uint16_t index,
+	uint16_t ident,
+	bool_t rtr,
+	uint8_t noOfBytes,
+	bool_t syncFlag
+)
+{
     CO_CANtx_t* buffer = NULL;
 
-    if (CANmodule != NULL && index < CANmodule->txSize) {
+    if (CANmodule != NULL && index < CANmodule->txSize)
+	{
         buffer = &CANmodule->txArray[index];
 
         /* CAN identifier, DLC and rtr, bit aligned with CAN module transmit buffer */
@@ -721,13 +727,24 @@ CAN_TX_IRQHandler( void )
 
 #endif
 
+void SendTxToUSB(CAN_TX_QUEUE_TYPE* msg);
+void SendRxToUSB( CAN_RX_QUEUE_TYPE *msg );
+
 void CO_process_queue()
 {
 	CAN_TX_QUEUE_TYPE* txQueueItem;
+	can_trans_frame_type frame_type;
 	while ((txQueueItem = CO_TxQueueGet()) != NULL)
 	{
-		if (CAN_TX_STATUS_NO_EMPTY != can_message_transmit(CAN_CAN, txQueueItem))
-			CO_TxQueueShift();
+		frame_type = txQueueItem->frame_type;
+		txQueueItem->frame_type = CAN_TFT_DATA;
+		if (CAN_TX_STATUS_NO_EMPTY == can_message_transmit(CAN_CAN, txQueueItem))
+			break;
+
+		if (frame_type == CAN_TFT_DATA)
+			SendTxToUSB(txQueueItem);
+
+		CO_TxQueueShift();
 	}
 
 	CAN_RX_QUEUE_TYPE* rxQueueItem;
@@ -738,6 +755,9 @@ void CO_process_queue()
 
 	while ((rxQueueItem = CANRxQueueGet()) != NULL)
 	{
+		frame_type = rxQueueItem->frame_type;
+		rxQueueItem->frame_type = CAN_TFT_DATA;
+
 		msg = rxQueueItem->standard_id;
 
 		for (index = 0; index < rxSize; index++)
@@ -751,6 +771,9 @@ void CO_process_queue()
 			}
 			msgBuff++;
 		}
+
+		if (frame_type == CAN_TFT_DATA)
+			SendRxToUSB(rxQueueItem);
 
 		CANRxQueueShift();
 	}

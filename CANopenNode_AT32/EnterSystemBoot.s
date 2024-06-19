@@ -2,8 +2,8 @@
 				THUMB
 
 				AREA    |.text|, CODE, READONLY
-EnterSystemBoot	PROC
-				EXPORT  EnterSystemBoot		[WEAK]
+CheckSystemBoot	PROC
+				EXPORT  CheckSystemBoot		[WEAK]
 				IMPORT  NormalBoot
 
 				; Load reserved location

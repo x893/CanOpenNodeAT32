@@ -139,7 +139,7 @@ canopen_app_init(CANopenNodeAT32* _canopenNodeAT32)
     }
 
     /* Configure Timer interrupt function for execution every 1 millisecond */
-	tmr_interrupt_enable( pCANopenNodeAT32->timerHandle, TMR_OVF_INT, TRUE );
+	tmr_counter_enable( pCANopenNodeAT32->timerHandle, TRUE);
 
     /* start CAN */
     CO_CANsetNormalMode(CO->CANmodule);
